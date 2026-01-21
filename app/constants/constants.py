@@ -223,129 +223,14 @@ ADMIN_EMAILS = ["philipgyimah@ideationaxis.com", "kelvingbolo@ideationaxis.com",
 # models/enums.py
 import enum
 
-class AxiUserRole(enum.Enum):
-    """Core roles in the AXI ecosystem"""
-    # Founders & Leadership
-    FOUNDER = "founder"                    # Primary startup founder
-    CO_FOUNDER = "co_founder"             # Co-founder of a startup
-    
-    # Builders & Contributors
-    BUILDER = "builder"                    # Technical/creative contributor
-    ADVISOR = "advisor"                    # Provides guidance and mentorship
-    MENTOR = "mentor"                      # Active mentorship role
-    
-    # Investors & Partners
-    INVESTOR = "investor"                  # Angel/VC investor
-    PARTNER = "partner"                    # Strategic partner/organization
-    
-    # Platform Management
-    ADMIN = "admin"                        # Platform administrator
-    MODERATOR = "moderator"               # Community moderator
-    
-    # Default
-    UNASSIGNED = "unassigned"             # New user, role pending
 
 
-class BuilderType(enum.Enum):
-    """Specific builder specializations"""
-    DEVELOPER = "developer"                # Software developer
-    DESIGNER = "designer"                  # UI/UX designer
-    MARKETER = "marketer"                 # Marketing specialist
-    SALES = "sales"                       # Sales specialist
-    PRODUCT_MANAGER = "product_manager"   # Product management
-    DATA_ANALYST = "data_analyst"         # Data & analytics
-    CONTENT_CREATOR = "content_creator"   # Content creation
-    BUSINESS_STRATEGIST = "business_strategist"  # Business strategy
-    OPERATIONS = "operations"             # Operations specialist
-    FINANCE = "finance"                   # Finance/accounting
-    LEGAL = "legal"                       # Legal specialist
-    HR = "hr"                            # Human resources
-    OTHER = "other"                       # Other specialization
-
-
-class VerificationStage(enum.Enum):
-    """User verification stages"""
-    OTP_PENDING = "otp_pending"           # Email/phone OTP not verified
-    OTP_VERIFIED = "otp_verified"         # OTP verified, onboarding pending
-    ONBOARDING_PENDING = "onboarding_pending"  # Profile completion needed
-    PROFILE_COMPLETE = "profile_complete"  # Profile complete, skills pending
-    SKILLS_VERIFIED = "skills_verified"   # Skills/portfolio verified
-    FULLY_VERIFIED = "fully_verified"     # All verification complete
-
-
-class AvailabilityStatus(enum.Enum):
-    """Builder availability for opportunities"""
-    AVAILABLE_FULLTIME = "available_fulltime"      # Available full-time
-    AVAILABLE_PARTTIME = "available_parttime"      # Available part-time
-    AVAILABLE_FREELANCE = "available_freelance"    # Available for projects
-    OPEN_TO_OPPORTUNITIES = "open_to_opportunities"  # Exploring options
-    NOT_AVAILABLE = "not_available"                # Not looking
-    IN_STARTUP = "in_startup"                      # Currently in a startup
-
-
-class ExperienceLevel(enum.Enum):
-    """Experience level for builders"""
-    BEGINNER = "beginner"                 # 0-1 years
-    INTERMEDIATE = "intermediate"         # 1-3 years
-    ADVANCED = "advanced"                 # 3-5 years
-    EXPERT = "expert"                     # 5+ years
-    THOUGHT_LEADER = "thought_leader"     # Industry leader
-
-
-class InvestorType(enum.Enum):
-    """Types of investors"""
-    ANGEL = "angel"                       # Angel investor
-    VC = "vc"                            # Venture capital
-    CORPORATE = "corporate"               # Corporate investor
-    FAMILY_OFFICE = "family_office"       # Family office
-    ACCELERATOR = "accelerator"           # Accelerator/incubator
-    GRANT_PROVIDER = "grant_provider"     # Grant organization
-
-
-class StartupStage(enum.Enum):
-    """Startup development stages"""
-    IDEA = "idea"                         # Just an idea
-    VALIDATION = "validation"             # Validating the idea
-    MVP = "mvp"                          # Building MVP
-    LAUNCH = "launch"                     # Launching product
-    GROWTH = "growth"                     # Growing user base
-    SCALE = "scale"                       # Scaling operations
-    MATURE = "mature"
 
 class EventStatus(str, enum.Enum):
     DRAFT = "draft"
     PUBLISHED = "published"
     CANCELLED = "cancelled"
     COMPLETED = "completed"
-
-class TicketTier(str, enum.Enum):
-    REGULAR = "REGULAR"
-    VIP = "VIP"
-    VVIP = "VVIP"
-
-class TicketStatus(str, enum.Enum):
-    PENDING = "pending"
-    CONFIRMED = "confirmed"
-    CANCELLED = "cancelled"
-    USED = "used"
-
-class PaymentStatus(str, enum.Enum):
-    PENDING = "pending"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    CANCELLED = "cancelled"
-    REFUNDED = "refunded"
-
-
-class PaymentPurpose(str, enum.Enum):
-    EVENT_TICKET = "event_ticket"
-    EVENT_SPONSOR = "event_sponsor"
-    SUBSCRIPTION = "subscription"
-    PRODUCT = "product"
-    DISTRIBUTOR_APPLICATION = "distributor_application"
-    DISTRIBUTOR_REACTIVATION = "distributor_reactivation"
-    OTHER = "other"
-
 
 
 class JobStatus(str, Enum):
@@ -365,51 +250,5 @@ class ApplicationStatus(str, Enum):
     ACCEPTED = "accepted"
     WITHDRAWN = "withdrawn"
 
-
-class DistributorStatus(str, Enum):
-    """Distributor application and account status."""
-    PENDING = "pending"
-    APPROVED = "approved"
-    ACTIVE = "active"
-    SUSPENDED = "suspended"
-    REJECTED = "rejected"
-
-
-class WithdrawalStatus(str, Enum):
-    """Withdrawal request status."""
-    PENDING = "pending"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    REJECTED = "rejected"
-
-
-class ProductCategory(str, Enum):
-    """Product category types."""
-    BEGINNER_KIT = "beginner_kit"
-    INNOVATION_KIT = "innovation_kit"
-    ADVANCED_KIT = "advanced_kit"
-    COMPONENTS = "components"
-    SENSORS = "sensors"
-    MODULES = "modules"
-    ACCESSORIES = "accessories"
-    BOOKS = "books"
-    OTHER = "other"
-
-
-class ProductStatus(str, Enum):
-    """Product status types."""
-    ACTIVE = "active"
-    OUT_OF_STOCK = "out_of_stock"
-    DISCONTINUED = "discontinued"
-    COMING_SOON = "coming_soon"
-    DRAFT = "draft"
-
-
-class PurchaseStatus(str, enum.Enum):
-    PENDING = "pending"
-    CONFIRMED = "confirmed"
-    PROCESSING = "processing"
-    SHIPPED = "shipped"
-    DELIVERED = "delivered"
-    CANCELLED = "cancelled"
-    REFUNDED = "refunded"
+EDUCATION_ROLES = ["student", "teacher", "parent", "admin"]
+EXPERIENCE_LEVELS = ["beginner", "intermediate", "advanced", "expert"]

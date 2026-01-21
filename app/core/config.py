@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     EMAIL_FROM: str = os.getenv("EMAIL_FROM", "no-reply@educ8africa.com")
     
     # ------------------------------
-# Microsoft Auth - Required for Educ8Africa
+    # Microsoft Auth - Required for Educ8Africa
 # ------------------------------
     MICROSOFT_CLIENT_ID: str = Field(env="MICROSOFT_CLIENT_ID")
     MICROSOFT_CLIENT_SECRET: str = Field(env="MICROSOFT_CLIENT_SECRET")
@@ -90,7 +90,6 @@ class Settings(BaseSettings):
     DB_MODELS: ClassVar[List[str]] = [
         "app.models.user",
         "app.models.availability",
-        "app.models.founderinspiration",
         "app.models.leave",
         "app.models.onboarding",
         "app.models.performance",
