@@ -59,67 +59,30 @@ scheduler_tasks = []
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Async context manager for app lifespan events"""
-    
     try:
         logger.info("🚀 Starting Educ8 Africa application...")
-        
+
         logger.info("🔌 Initializing database connection pool...")
         await session_manager.init()
         logger.info("✅ Database connection pool ready")
-        
-        # Create tables automatically
+
         logger.info("📊 Creating database tables...")
         from app.models.base import Base
-        import app.models  # This imports all models
-        
+        import app.models
+
         async with session_manager.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         logger.info("✅ All tables created!")
-        
-        # Start schedulers if available
-        if SATURDAY_AVAILABLE:
-            logger.info("📅 Starting Social Saturday Scheduler...")
-            task = asyncio.create_task(social_saturday_scheduler())
-            scheduler_tasks.append(task)
-            logger.info("✅ Social Saturday Scheduler started")
-        
-        if SUNDAY_AVAILABLE:
-            logger.info("📅 Starting Social Sunday Scheduler...")
-            task = asyncio.create_task(social_sunday_scheduler())
-            scheduler_tasks.append(task)
-            logger.info("✅ Social Sunday Scheduler started")
-            
-    except Exception as e:
-        logger.critical(f"🔥 Application startup failed: {str(e)}")
-        raise
-    
-    try:
-        logger.info("🏁 Educ8 Africa application startup complete")
-        yield
+
+        # ❌ schedulers intentionally disabled
+
+        yield  # 👈 REQUIRED
+
     finally:
-        try:
-            logger.info("🛑 Beginning application shutdown...")
-            
-            # Cancel all scheduler tasks
-            for task in scheduler_tasks:
-                if not task.done():
-                    logger.info("⏹️ Stopping scheduler...")
-                    task.cancel()
-                    try:
-                        await task
-                    except asyncio.CancelledError:
-                        logger.info("✅ Scheduler stopped")
-            
-            logger.info("🔌 Closing database connections...")
-            await session_manager.close()
-            logger.info("✅ Database connections closed cleanly")
-        except Exception as e:
-            logger.error(f"⚠️ Error during shutdown: {str(e)}")
-            raise
-        finally:
-            logger.info("👋 Application shutdown complete")
-            
+        logger.info("🛑 Shutting down application...")
+        await session_manager.close()
+        logger.info("✅ Database closed")
+        
 
 app = FastAPI(
     title="Educ8 Africa API",
@@ -185,7 +148,7 @@ async def health_check(db: AsyncSession = Depends(aget_db)):
             "status": "healthy",
             "service": "Educ8 Africa API",
             "database": "connected",
-            "schedulers_running": len([t for t in scheduler_tasks if not t.done()])
+            # "schedulers_running": len([t for t in scheduler_tasks if not t.done()])
         }
     except Exception as e:
         logger.error(f"Health check failed: {str(e)}")

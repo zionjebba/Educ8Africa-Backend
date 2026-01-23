@@ -1,4 +1,4 @@
-"""Updated onboarding endpoints with team selection."""
+"""Updated onboarding endpoints for Educ8Africa - 4 questions only."""
 
 from datetime import datetime
 from typing import Optional
@@ -6,7 +6,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.constants.constants import AVAILABLE_ROLES, FOUNDER_OPTIONS, MISSION_VISSION_CARDS, FounderChoice, UserRole
+from app.constants.constants import AVAILABLE_ROLES, MISSION_VISSION_CARDS, UserRole
 from app.core.database import aget_db
 from app.models.onboarding import OnboardingResponse
 from app.models.team import Team, TeamMember
@@ -21,8 +21,6 @@ router = APIRouter(
     tags=["onboarding"]
 )
 
-
-CORRECT_CEO_INITIALS = "PAG" 
 CORRECT_MISSION_VISION = "mission_card_1"
 
 
@@ -52,7 +50,6 @@ async def get_onboarding_config(db: AsyncSession = Depends(aget_db)):
     
     return {
         "available_roles": AVAILABLE_ROLES,
-        "founder_options": FOUNDER_OPTIONS,
         "mission_vision_cards": MISSION_VISSION_CARDS,
         "teams": teams_list
     }
@@ -60,9 +57,6 @@ async def get_onboarding_config(db: AsyncSession = Depends(aget_db)):
 
 @router.post("/submit")
 async def submit_onboarding(
-    ceo_initials_answer: str = Form(...),
-    favourite_founder: str = Form(...),
-    custom_founder_preference: Optional[str] = Form(None),
     mission_vision_choice: str = Form(...),
     selected_role: str = Form(...),
     selected_team_id: str = Form(...),
@@ -80,7 +74,7 @@ async def submit_onboarding(
             detail="Onboarding already completed"
         )
     
-    allowed_roles = ["employee", "intern", "nsp"]
+    allowed_roles = ["employee", "intern", "nsp", "admin"]
     if selected_role not in allowed_roles:
         raise HTTPException(
             status_code=400,
@@ -103,15 +97,10 @@ async def submit_onboarding(
         username = current_user.first_name or current_user.email or f"user_{current_user.user_id}"
         avatar_url = await validate_and_upload_avatar(avatar, username)
     
-    ceo_correct = ceo_initials_answer.upper().strip() == CORRECT_CEO_INITIALS
     mission_correct = mission_vision_choice == CORRECT_MISSION_VISION
     
-    total_score, points_earned = calculate_onboarding_score(ceo_correct, mission_correct)
-    
-    try:
-        founder_enum = FounderChoice(favourite_founder)
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid founder choice")
+    # Only mission/vision counts for scoring now
+    total_score, points_earned = calculate_onboarding_score(False, mission_correct)
     
     existing_response = await db.execute(
         select(OnboardingResponse).where(
@@ -121,10 +110,6 @@ async def submit_onboarding(
     onboarding_response = existing_response.scalar_one_or_none()
     
     if onboarding_response:
-        onboarding_response.ceo_initials_answer = ceo_initials_answer
-        onboarding_response.ceo_initials_correct = ceo_correct
-        onboarding_response.favourite_founder = founder_enum
-        onboarding_response.custom_founder_preference = custom_founder_preference
         onboarding_response.mission_vision_choice = mission_vision_choice
         onboarding_response.mission_vision_correct = mission_correct
         onboarding_response.total_score = total_score
@@ -134,10 +119,6 @@ async def submit_onboarding(
         onboarding_response = OnboardingResponse(
             response_id=str(uuid.uuid4()),
             user_id=current_user.user_id,
-            ceo_initials_answer=ceo_initials_answer,
-            ceo_initials_correct=ceo_correct,
-            favourite_founder=founder_enum,
-            custom_founder_preference=custom_founder_preference,
             mission_vision_choice=mission_vision_choice,
             mission_vision_correct=mission_correct,
             total_score=total_score,
@@ -153,8 +134,6 @@ async def submit_onboarding(
     current_user.points += points_earned
     current_user.avatar = avatar_url
     current_user.role = UserRole(selected_role)
-    current_user.favourite_founder = founder_enum
-    current_user.custom_founder_preference = custom_founder_preference
     
     current_user.department_id = selected_team.department_id
     
@@ -199,7 +178,6 @@ async def submit_onboarding(
         "score": total_score,
         "points_earned": points_earned,
         "total_points": current_user.points,
-        "ceo_correct": ceo_correct,
         "mission_correct": mission_correct,
         "avatar_url": avatar_url,
         "role": selected_role,
@@ -235,7 +213,6 @@ async def skip_onboarding(
             detail="Default team (Research Team) not found. Please contact administrator."
         )
     
-    # Get department details
     dept_result = await db.execute(
         select(Department).where(Department.department_id == research_team.department_id)
     )
@@ -247,7 +224,6 @@ async def skip_onboarding(
             detail="Department not found for Research Team. Please contact administrator."
         )
     
-    # Update user details
     current_user.onboarding_completed = True
     current_user.onboarding_skipped = True
     current_user.onboarding_completed_at = datetime.utcnow()
@@ -344,9 +320,7 @@ async def get_onboarding_status(
             "completed_at": current_user.onboarding_completed_at,
             "team_info": team_info,
             "details": {
-                "ceo_correct": response.ceo_initials_correct if response else None,
                 "mission_correct": response.mission_vision_correct if response else None,
-                "favourite_founder": response.favourite_founder.value if response else None,
             } if response else None
         }
     

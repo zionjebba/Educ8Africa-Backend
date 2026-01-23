@@ -102,6 +102,15 @@ class AvailabilityCheckStatus(str, Enum):
     late = "late"
 
 AVAILABLE_ROLES = [
+      {
+        "value": "admin",
+        "label": "Admin",
+        "description": "System Administrator",
+        "icon": "shield",
+        "gradient": "from-purple-500 to-pink-600",
+        "bgPattern": "from-purple-50 to-pink-50",
+        "accentColor": "amber"
+    },
     {
         "value": "employee",
         "label": "Employee",
@@ -123,7 +132,7 @@ AVAILABLE_ROLES = [
     {
         "value": "intern",
         "label": "Intern",
-        "description": "Ideation Axis Builders Fellow",
+        "description": "Company Intern",
         "icon": "lightbulb",
         "gradient": "from-amber-500 to-orange-600",
         "bgPattern": "from-amber-50 to-orange-50",
@@ -131,31 +140,33 @@ AVAILABLE_ROLES = [
     },
 ]
 
-FOUNDER_OPTIONS = [
-    {
-        "value": "bill_gates",
-        "label": "Bill Gates",
-        "description": "Co-founder of Microsoft, Philanthropist",
-        "image": "/images/founders/bill-gates.png"
-    },
-    {
-        "value": "elon_musk",
-        "label": "Elon Musk",
-        "description": "CEO of Tesla and SpaceX",
-        "image": "/images/founders/elon-musk.png"
-    },
-    {
-        "value": "steve_jobs",
-        "label": "Steve Jobs",
-        "description": "Co-founder of Apple Inc.",
-        "image": "/images/founders/steve-jobs.png"
-    },
-    {
-        "value": "custom",
-        "label": "Other",
-        "description": "Choose your own inspiration"
-    }
-]
+
+
+# FOUNDER_OPTIONS = [
+#     {
+#         "value": "bill_gates",
+#         "label": "Bill Gates",
+#         "description": "Co-founder of Microsoft, Philanthropist",
+#         "image": "/images/founders/bill-gates.png"
+#     },
+#     {
+#         "value": "elon_musk",
+#         "label": "Elon Musk",
+#         "description": "CEO of Tesla and SpaceX",
+#         "image": "/images/founders/elon-musk.png"
+#     },
+#     {
+#         "value": "steve_jobs",
+#         "label": "Steve Jobs",
+#         "description": "Co-founder of Apple Inc.",
+#         "image": "/images/founders/steve-jobs.png"
+#     },
+#     {
+#         "value": "custom",
+#         "label": "Other",
+#         "description": "Choose your own inspiration"
+#     }
+# ]
 
 
 MISSION_VISSION_CARDS = [
